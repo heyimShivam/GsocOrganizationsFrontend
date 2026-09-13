@@ -62,8 +62,6 @@ export default function SignupPage() {
                 );
             }
 
-            console.log("Registration successful:", result);
-
             toast.success("Registration successful!", {
                 description:
                     result.message ||

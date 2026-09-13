@@ -3,6 +3,7 @@
 import "@/css/ContributorPreview.css";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 import {
     Star,
@@ -361,10 +362,13 @@ export default function ContributorPreview({
                                 rel="noopener noreferrer"
                                 className="contributor-avatar-link"
                             >
-                                <img
+                                <Image
                                     src={contributor.avatarUrl}
                                     alt={contributor.login}
                                     className="contributor-avatar"
+                                    width={52}
+                                    height={52}
+                                    sizes="(max-width: 640px) 48px, 52px"
                                 />
                             </a>
 

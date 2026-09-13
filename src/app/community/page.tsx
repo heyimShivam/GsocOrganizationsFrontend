@@ -13,6 +13,13 @@ import { toast } from "sonner";
 
 import { useAuth } from "@/context/AuthContext";
 import { SiteHeader } from "@/components/SiteHeader";
+import { useChatComposer } from "@/hooks/useChatComposer";
+import { useMessageSearch } from "@/hooks/useMessageSearch";
+import {
+    ChatChannel,
+    ChatMessage,
+    OnlineCountResponse,
+} from "@/types/Community";
 
 import {
     Hash,
@@ -26,31 +33,6 @@ import {
     CheckCircle2,
     LogIn,
 } from "lucide-react";
-
-
-/* =========================================================
-   TYPES
-========================================================= */
-
-type ChatChannel = {
-    id: string;
-    name: string;
-    description: string;
-};
-
-type ChatMessage = {
-    id: string;
-    channelId: string;
-    userId: string;
-    userName: string;
-    githubUsername: string | null;
-    message: string;
-    createdAt: string;
-};
-
-type OnlineCountResponse = {
-    count: number;
-};
 
 
 /* =========================================================
@@ -76,11 +58,6 @@ export default function CommunityPage() {
     } = useAuth();
 
 
-    useEffect(() => {
-        console.log("[Community] user:", user);
-        console.log("[Community] authLoading:", authLoading);
-    }, [user, authLoading]);
-
     /* =====================================================
        STATE
     ===================================================== */
@@ -94,9 +71,6 @@ export default function CommunityPage() {
     const [messages, setMessages] =
         useState<ChatMessage[]>([]);
 
-    const [messageInput, setMessageInput] =
-        useState("");
-
     const [onlineCount, setOnlineCount] =
         useState(0);
 
@@ -105,13 +79,6 @@ export default function CommunityPage() {
 
     const [loadingMessages, setLoadingMessages] =
         useState(false);
-
-    const [sending, setSending] =
-        useState(false);
-
-    const [searchQuery, setSearchQuery] =
-        useState("");
-
 
     /* =====================================================
        REFS
@@ -128,6 +95,23 @@ export default function CommunityPage() {
 
     const messagesEndRef =
         useRef<HTMLDivElement | null>(null);
+
+    const {
+        messageInput,
+        setMessageInput,
+        sending,
+        sendMessage,
+        handleKeyDown,
+    } = useChatComposer({
+        activeChannel,
+        clientRef: stompClientRef,
+    });
+
+    const {
+        searchQuery,
+        setSearchQuery,
+        filteredMessages,
+    } = useMessageSearch(messages);
 
 
     /* =====================================================
@@ -386,16 +370,6 @@ export default function CommunityPage() {
 
                 debug: (message) => {
 
-                    if (
-                        process.env.NODE_ENV ===
-                        "development"
-                    ) {
-
-                        console.log(
-                            "[STOMP]",
-                            message
-                        );
-                    }
                 },
 
 
@@ -404,11 +378,6 @@ export default function CommunityPage() {
                 ===================================== */
 
                 onConnect: () => {
-
-                    console.log(
-                        "Connected to chat WebSocket"
-                    );
-
 
                     /*
                      * Online count
@@ -427,12 +396,6 @@ export default function CommunityPage() {
                                     JSON.parse(
                                         message.body
                                     );
-
-
-                                console.log(
-                                    "Online count received:",
-                                    data.count
-                                );
 
 
                                 setOnlineCount(
@@ -519,10 +482,6 @@ export default function CommunityPage() {
                 ===================================== */
 
                 onWebSocketClose: () => {
-
-                    console.log(
-                        "Chat WebSocket disconnected"
-                    );
 
                     /*
                      * No toast here.
@@ -734,141 +693,6 @@ export default function CommunityPage() {
 
 
     /* =====================================================
-       SEND MESSAGE
-    ===================================================== */
-
-    const sendMessage = () => {
-
-        const message =
-            messageInput.trim();
-
-
-        /*
-         * Validation
-         */
-
-        if (!message) {
-
-            toast.error(
-                "Message cannot be empty."
-            );
-
-            return;
-        }
-
-
-        if (!activeChannel) {
-
-            toast.error(
-                "Please select a channel."
-            );
-
-            return;
-        }
-
-
-        if (sending) {
-            return;
-        }
-
-
-        const client =
-            stompClientRef.current;
-
-
-        /*
-         * WebSocket not connected
-         */
-
-        if (
-            !client ||
-            !client.connected
-        ) {
-
-            toast.error(
-                "Chat is not connected.",
-                {
-                    description:
-                        "Please wait a moment and try again.",
-                }
-            );
-
-            return;
-        }
-
-
-        try {
-
-            setSending(true);
-
-
-            client.publish({
-
-                destination:
-                    "/app/chat.send",
-
-                body:
-                    JSON.stringify({
-
-                        channelId:
-                            activeChannel.id,
-
-                        message,
-                    }),
-            });
-
-
-            /*
-             * Clear input immediately.
-             */
-
-            setMessageInput("");
-
-
-        } catch (error) {
-
-            console.error(
-                "Failed to send message:",
-                error
-            );
-
-
-            toast.error(
-                "Failed to send message.",
-                {
-                    description:
-                        "Please try again.",
-                }
-            );
-
-        } finally {
-
-            setSending(false);
-        }
-    };
-
-
-    /* =====================================================
-       ENTER KEY
-    ===================================================== */
-
-    const handleKeyDown = (
-        event: React.KeyboardEvent<HTMLInputElement>
-    ) => {
-
-        if (
-            event.key === "Enter" &&
-            !event.shiftKey
-        ) {
-
-            event.preventDefault();
-
-            sendMessage();
-        }
-    };
-
-
-    /* =====================================================
        HELPERS
     ===================================================== */
 
@@ -900,45 +724,6 @@ export default function CommunityPage() {
             "?"
         );
     };
-
-
-    /* =====================================================
-       FILTER MESSAGES
-    ===================================================== */
-
-    const filteredMessages =
-        messages.filter(
-            (message) => {
-
-                if (
-                    !searchQuery.trim()
-                ) {
-
-                    return true;
-                }
-
-
-                const query =
-                    searchQuery
-                        .toLowerCase()
-                        .trim();
-
-
-                return (
-                    message.message
-                        .toLowerCase()
-                        .includes(query) ||
-
-                    message.userName
-                        .toLowerCase()
-                        .includes(query) ||
-
-                    message.githubUsername
-                        ?.toLowerCase()
-                        .includes(query)
-                );
-            }
-        );
 
 
     /* =====================================================

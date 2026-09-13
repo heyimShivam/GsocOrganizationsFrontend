@@ -145,6 +145,8 @@ export default function ExplorerPage() {
      * Fetch organizations
      */
     useEffect(() => {
+        const controller = new AbortController();
+
         const fetchOrganizations = async () => {
             try {
                 let activeOrg: boolean | undefined;
@@ -188,7 +190,8 @@ export default function ExplorerPage() {
                             "Content-Type":
                                 "application/json"
                         },
-                        body: JSON.stringify(reqBody)
+                        body: JSON.stringify(reqBody),
+                        signal: controller.signal,
                     }
                 );
 
@@ -217,6 +220,13 @@ export default function ExplorerPage() {
                     responseData.data.totalRecords
                 );
             } catch (error) {
+                if (
+                    error instanceof Error &&
+                    error.name === "AbortError"
+                ) {
+                    return;
+                }
+
                 console.error(
                     "Error fetching organizations:",
                     error
@@ -225,6 +235,8 @@ export default function ExplorerPage() {
         };
 
         fetchOrganizations();
+
+        return () => controller.abort();
     }, [
         currentPage,
         debouncedSearch,

@@ -3,7 +3,6 @@
 import Link from "next/link";
 import {
     ArrowRight,
-    BookOpen,
     CheckCircle2,
     Code2,
     Lightbulb,
@@ -51,13 +50,6 @@ export default function GuideHeader() {
                             <ArrowRight size={20} />
                         </Link>
 
-                        {/* <Link
-                            href="/guide"
-                            className="guideHeaderSecondaryButton"
-                        >
-                            <BookOpen size={19} />
-                            <span>Read the Full Guide</span>
-                        </Link> */}
                     </div>
 
                     <div className="guideHeaderTrust">

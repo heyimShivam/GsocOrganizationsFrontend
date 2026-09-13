@@ -154,9 +154,6 @@ export default function ProjectTabOrganization({
                     await response.json();
 
 
-                console.log("Projects response:", result);
-
-
                 /*
                 ========================================
                 YOUR API RESPONSE:

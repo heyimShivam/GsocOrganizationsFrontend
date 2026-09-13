@@ -63,14 +63,6 @@ export default function GuideFaq() {
                                     and using GSoC Hub.
                                 </p>
                             </div>
-                            {/* 
-                            <Link
-                                href="/guide#faq"
-                                className="guideFaqViewAll"
-                            >
-                                <span>View all FAQs</span>
-                                <ArrowRight size={14} />
-                            </Link> */}
                         </div>
 
                         <div className="guideFaqList">
