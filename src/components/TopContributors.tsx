@@ -57,7 +57,6 @@ export default function TopContributors({
 
                 const result: ContributorsResponse = await response.json();
 
-
                 const contributorList =
                     result.data?.content ?? [];
 
