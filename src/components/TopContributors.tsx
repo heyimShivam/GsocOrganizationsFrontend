@@ -41,18 +41,22 @@ export default function TopContributors({
                 setLoading(true);
                 setError(false);
 
-                const response = await fetch(
-                    `/api/organizations/${orgId}/contributors?page=1&size=3`,
-                    {
-                        signal: controller.signal,
-                    }
-                );
+                const url =
+                    `/api/organizations/${orgId}/contributors?page=1&size=3`;
+
+
+                const response = await fetch(url, {
+                    signal: controller.signal,
+                });
 
                 if (!response.ok) {
-                    throw new Error("Failed to fetch contributors");
+                    throw new Error(
+                        `Failed to fetch contributors`
+                    );
                 }
 
                 const result: ContributorsResponse = await response.json();
+
 
                 const contributorList =
                     result.data?.content ?? [];
@@ -65,6 +69,7 @@ export default function TopContributors({
                     .slice(0, 3);
 
                 setContributors(sortedContributors);
+
             } catch (error) {
                 if (
                     error instanceof Error &&
@@ -73,8 +78,10 @@ export default function TopContributors({
                     return;
                 }
 
-                console.error(error);
+                console.error("FETCH CONTRIBUTORS FAILED:", error);
+
                 setError(true);
+
             } finally {
                 if (!controller.signal.aborted) {
                     setLoading(false);
