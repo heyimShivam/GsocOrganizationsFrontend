@@ -41,8 +41,6 @@ export function SiteHeader({
     const handleLogout = async () => {
         setProfileMenuOpen(false);
 
-        console.log(logout);
-
         await logout();
 
         router.push("/");

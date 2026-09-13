@@ -232,7 +232,7 @@ export default function PublicUserProfilePage() {
         const categories =
             organizations.flatMap(
                 (organization) =>
-                    organization.categories || []
+                    organization.category || []
             );
 
         return new Set(categories).size;

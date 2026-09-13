@@ -3,6 +3,7 @@
 import "@/css/TopContributors.css";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { Star, Trophy, Github, Medal } from "lucide-react";
 
 interface Contributor {
@@ -56,7 +57,6 @@ export default function TopContributors({
                 }
 
                 const result: ContributorsResponse = await response.json();
-
 
                 const contributorList =
                     result.data?.content ?? [];
@@ -188,10 +188,13 @@ function ContributorCard({
                 rel="noopener noreferrer"
                 className="top-contributor-avatar-link"
             >
-                <img
+                <Image
                     src={contributor.avatarUrl}
                     alt={contributor.login}
                     className="top-contributor-avatar"
+                    width={54}
+                    height={54}
+                    sizes="54px"
                 />
             </a>
 
