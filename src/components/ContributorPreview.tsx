@@ -3,6 +3,7 @@
 import "@/css/ContributorPreview.css";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 import {
     Star,
@@ -157,10 +158,6 @@ export default function ContributorPreview({
     };
 
 
-    /* ========================================
-       INITIAL + PAGE CHANGE FETCH
-    ======================================== */
-
     useEffect(() => {
 
         const controller =
@@ -180,10 +177,6 @@ export default function ContributorPreview({
     }, [orgId, currentPage]);
 
 
-    /* ========================================
-       PAGE CHANGE
-    ======================================== */
-
     const changePage = (
         page: number
     ) => {
@@ -200,19 +193,10 @@ export default function ContributorPreview({
 
     };
 
-
-    /* ========================================
-       SHIMMER
-    ======================================== */
-
     if (loading && contributors.length === 0) {
         return <ContributorSkeleton />;
     }
 
-
-    /* ========================================
-       ERROR
-    ======================================== */
 
     if (error) {
 
@@ -247,10 +231,6 @@ export default function ContributorPreview({
     }
 
 
-    /* ========================================
-       EMPTY
-    ======================================== */
-
     if (!loading && contributors.length === 0) {
 
         return (
@@ -274,17 +254,9 @@ export default function ContributorPreview({
 
     }
 
-
-    /* ========================================
-       UI
-    ======================================== */
-
     return (
 
         <section className="contributors-section">
-
-
-            {/* HEADER */}
 
             <div className="contributors-header">
 
@@ -314,9 +286,6 @@ export default function ContributorPreview({
 
             </div>
 
-
-            {/* GRID */}
-
             <div
                 className={`contributor-mini-grid ${loading ? "contributors-loading" : ""
                     }`}
@@ -339,7 +308,6 @@ export default function ContributorPreview({
                             key={contributor.id}
                             className={`contributor-card ${rankClass}`}
                         >
-                            {/* Rank Badge */}
 
                             {rank <= 3 && (
                                 <div className="contributor-rank-badge">
@@ -353,7 +321,6 @@ export default function ContributorPreview({
                                 </div>
                             )}
 
-                            {/* Avatar */}
 
                             <a
                                 href={contributor.htmlUrl}
@@ -361,18 +328,19 @@ export default function ContributorPreview({
                                 rel="noopener noreferrer"
                                 className="contributor-avatar-link"
                             >
-                                <img
+                                <Image
                                     src={contributor.avatarUrl}
                                     alt={contributor.login}
                                     className="contributor-avatar"
+                                    width={52}
+                                    height={52}
+                                    sizes="(max-width: 640px) 48px, 52px"
                                 />
                             </a>
 
-                            {/* Username */}
 
                             <h3>{contributor.login}</h3>
 
-                            {/* GitHub */}
 
                             <a
                                 href={contributor.htmlUrl}
@@ -383,7 +351,6 @@ export default function ContributorPreview({
                                 GitHub Profile ↗
                             </a>
 
-                            {/* Contributions */}
 
                             <div className="contributor-contributions">
                                 <span className="contribution-icon">★</span>
@@ -400,9 +367,6 @@ export default function ContributorPreview({
 
             </div>
 
-
-            {/* PAGE LOADING OVERLAY */}
-
             {loading && contributors.length > 0 && (
 
                 <div className="contributors-page-loading">
@@ -414,14 +378,10 @@ export default function ContributorPreview({
             )}
 
 
-            {/* PAGINATION */}
 
             {totalPages > 1 && (
 
                 <div className="contributors-pagination">
-
-
-                    {/* Previous */}
 
                     <button
                         type="button"
@@ -435,9 +395,6 @@ export default function ContributorPreview({
                         <ChevronLeft size={17} />
 
                     </button>
-
-
-                    {/* PAGE NUMBERS */}
 
                     {getPaginationPages(
                         currentPage,
@@ -481,8 +438,6 @@ export default function ContributorPreview({
                     )}
 
 
-                    {/* NEXT */}
-
                     <button
                         type="button"
                         onClick={() =>
@@ -508,11 +463,6 @@ export default function ContributorPreview({
     );
 
 }
-
-
-/* ========================================
-   PAGINATION LOGIC
-======================================== */
 
 function getPaginationPages(
     currentPage: number,
@@ -578,11 +528,6 @@ function getPaginationPages(
     ];
 
 }
-
-
-/* ========================================
-   SHIMMER
-======================================== */
 
 function ContributorSkeleton() {
 

@@ -25,6 +25,7 @@ import {
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 
 import ContributorPreview from "@/components/ContributorPreview";
 import LogoTile from "@/components/LogoTile";
@@ -34,21 +35,29 @@ import { SiteHeader } from "@/components/SiteHeader";
 import TagContent from "@/components/TagContent";
 import { OrganizationDetails } from "@/types/OrganizationDetails";
 import { Project } from "@/types/Project";
-import { Repository } from "@/types/Repository";
 import { Tab } from "@/types/Tab";
 import { ProjectsPerYear } from "@/types/ProjectsPerYear";
-import ProjectTabOrganization from "@/components/ProjectTabOrganization";
-import RepoTabOrg from "@/components/RepoTabOrg";
+const ProjectTabOrganization = dynamic(
+    () => import("@/components/ProjectTabOrganization"),
+    {
+        loading: () => (
+            <div className="empty-state">
+                Loading projects...
+            </div>
+        ),
+    }
+);
 
-type SortBy =
-    | "STARS"
-    | "FORKS"
-    | "OPEN_ISSUES";
-
-
-type Direction =
-    | "ASC"
-    | "DESC";
+const RepoTabOrg = dynamic(
+    () => import("@/components/RepoTabOrg"),
+    {
+        loading: () => (
+            <div className="empty-state">
+                Loading repositories...
+            </div>
+        ),
+    }
+);
 
 
 
@@ -64,9 +73,6 @@ export default function OrganizationDetailPage() {
             null
         );
 
-    const [repositories, setRepositories] =
-        useState<Repository[]>([]);
-
     const [projectsPerYear, setProjectsPerYear] =
         useState<ProjectsPerYear[]>([]);
 
@@ -76,16 +82,6 @@ export default function OrganizationDetailPage() {
     const [loading, setLoading] =
         useState(true);
 
-    const [repoName, setRepoName] =
-        useState("");
-
-    const [sortBy, setSortBy] =
-        useState<SortBy>("STARS");
-
-    const [direction, setDirection] =
-        useState<Direction>("DESC");
-
-
     const [error, setError] =
         useState<string | null>(null);
 
@@ -94,15 +90,26 @@ export default function OrganizationDetailPage() {
             return;
         }
 
+        const controller = new AbortController();
+
         const fetchData = async () => {
             try {
                 setLoading(true);
                 setError(null);
 
-                const organizationResponse =
-                    await fetch(
-                        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/organizations/${organizationId}`
-                    );
+                const [
+                    organizationResponse,
+                    projectsPerYearResponse,
+                ] = await Promise.all([
+                    fetch(
+                        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/organizations/${organizationId}`,
+                        { signal: controller.signal }
+                    ),
+                    fetch(
+                        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/projects/${organizationId}/years`,
+                        { signal: controller.signal }
+                    ),
+                ]);
 
                 if (!organizationResponse.ok) {
                     throw new Error(
@@ -117,48 +124,6 @@ export default function OrganizationDetailPage() {
                     organizationData.data
                 );
 
-                /*
-                 * These endpoints belong to the same
-                 * organization, so fetch them here too.
-                 *
-                 * Existing hardcoded components such as
-                 * OverviewContent and ContributorPreview
-                 * are still kept below.
-                 */
-                const [
-                    repositoriesResponse,
-                    projectsPerYearResponse
-                ] = await Promise.all([
-                    fetch(
-                        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/repositories/${organizationId}?size=50`,
-                        {
-                            method: "POST",
-
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
-
-                            body: JSON.stringify({
-                                repoName,
-                                sortBy,
-                                direction,
-                            })
-                        }
-                    ),
-                    fetch(
-                        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/projects/${organizationId}/years`
-                    )
-                ]);
-
-                if (repositoriesResponse.ok) {
-                    const repositoriesData =
-                        await repositoriesResponse.json();
-
-                    setRepositories(
-                        repositoriesData.data.content
-                    );
-                }
-
                 if (projectsPerYearResponse.ok) {
                     const projectsData =
                         await projectsPerYearResponse.json();
@@ -168,6 +133,13 @@ export default function OrganizationDetailPage() {
                     );
                 }
             } catch (error) {
+                if (
+                    error instanceof Error &&
+                    error.name === "AbortError"
+                ) {
+                    return;
+                }
+
                 console.error(
                     "Error fetching organization data:",
                     error
@@ -177,11 +149,15 @@ export default function OrganizationDetailPage() {
                     "Unable to load organization details."
                 );
             } finally {
-                setLoading(false);
+                if (!controller.signal.aborted) {
+                    setLoading(false);
+                }
             }
         };
 
         fetchData();
+
+        return () => controller.abort();
     }, [organizationId]);
 
     if (loading) {
@@ -364,25 +340,12 @@ export default function OrganizationDetailPage() {
             </section>
 
             <section className="detail-content">
-                {/*
-                 * Kept exactly as your existing
-                 * hardcoded component.
-                 */}
                 {tab === "Overview" && (
                     <OverviewContent data={organization} projectsPerYear={projectsPerYear} />
                 )}
-
-                {/*
-                 * Projects now use your backend
-                 * projectsPerYear endpoint.
-                 */}
                 {tab === "Projects" && (
                     <>
                         {projectsPerYear.length === 0 ? (
-                            /*
-                             * Keep your existing hardcoded
-                             * ProjectPreview as fallback.
-                             */
                             <ProjectPreview />
                         ) : (
                             <section>
@@ -393,11 +356,6 @@ export default function OrganizationDetailPage() {
                         )}
                     </>
                 )}
-
-                {/*
-                 * Repositories use your backend
-                 * repositories endpoint.
-                 */}
                 {tab ===
                     "Repositories" && (
                         <section>
@@ -424,10 +382,6 @@ export default function OrganizationDetailPage() {
                     />
                 )}
 
-                {/*
-                 * Existing hardcoded contributor
-                 * component is preserved.
-                 */}
                 {tab === "Contributors" && (
                     <ContributorPreview orgId={organizationId} />
                 )}

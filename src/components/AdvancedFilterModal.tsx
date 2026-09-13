@@ -224,7 +224,6 @@ export default function AdvancedFilterModal({
                             </div>
                         )}
 
-                        {/* CATEGORIES / TECHNOLOGIES / TOPICS */}
                         {tab !== "Years" &&
                             tab !== "Status" && (
                                 <div className="choice-grid">
@@ -248,7 +247,6 @@ export default function AdvancedFilterModal({
                                 </div>
                             )}
 
-                        {/* EMPTY STATE */}
                         {tab === "Years" &&
                             years.length === 0 && (
                                 <p className="filter-empty">

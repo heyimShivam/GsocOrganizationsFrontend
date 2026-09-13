@@ -64,7 +64,6 @@ export default function VerifyEmailPage() {
                 try {
                     result = await response.json();
                 } catch {
-                    // Backend may return an empty/non-JSON response
                 }
 
                 if (!response.ok) {
@@ -118,7 +117,6 @@ export default function VerifyEmailPage() {
             />
 
             <section className="verifyEmailCard">
-                {/* Logo */}
                 <Link
                     href="/"
                     className="verifyEmailBrand"
@@ -131,8 +129,6 @@ export default function VerifyEmailPage() {
                         GSoC <b>Hub</b>
                     </span>
                 </Link>
-
-                {/* Loading */}
                 {status === "loading" && (
                     <div className="verifyEmailContent">
                         <div className="verifyEmailIcon verifyEmailIconLoading">
@@ -161,7 +157,6 @@ export default function VerifyEmailPage() {
                     </div>
                 )}
 
-                {/* Success */}
                 {status === "success" && (
                     <div className="verifyEmailContent">
                         <div className="verifyEmailIcon verifyEmailIconSuccess">
@@ -204,7 +199,6 @@ export default function VerifyEmailPage() {
                     </div>
                 )}
 
-                {/* Error */}
                 {status === "error" && (
                     <div className="verifyEmailContent">
                         <div className="verifyEmailIcon verifyEmailIconError">
@@ -247,7 +241,6 @@ export default function VerifyEmailPage() {
                     </div>
                 )}
 
-                {/* Bottom */}
                 <div className="verifyEmailFooter">
                     <MailCheck size={15} />
 

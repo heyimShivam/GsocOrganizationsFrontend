@@ -103,10 +103,6 @@ export function AuthProvider({
                  */
 
                 if (response.status === 401) {
-                    console.log(
-                        "[Auth] No authenticated user"
-                    );
-
                     setUser(null);
 
                     return;
@@ -130,11 +126,6 @@ export function AuthProvider({
                 const result: User =
                     await response.json();
 
-                console.log(
-                    "[Auth] Authenticated user:",
-                    result
-                );
-
                 setUser(result);
 
             } catch (error) {
@@ -156,9 +147,6 @@ export function AuthProvider({
 
                 setLoading(false);
 
-                console.log(
-                    "[Auth] Authentication loading finished"
-                );
             }
         };
 
@@ -186,10 +174,6 @@ export function AuthProvider({
                  */
 
                 if (response.status === 401) {
-                    console.log(
-                        "[Auth] Refresh: user is not authenticated"
-                    );
-
                     setUser(null);
 
                     return null;
@@ -213,11 +197,6 @@ export function AuthProvider({
                     await response.json();
 
                 setUser(result);
-
-                console.log(
-                    "[Auth] User refreshed:",
-                    result
-                );
 
                 return result;
 

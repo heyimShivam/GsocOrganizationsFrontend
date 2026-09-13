@@ -13,6 +13,13 @@ import { toast } from "sonner";
 
 import { useAuth } from "@/context/AuthContext";
 import { SiteHeader } from "@/components/SiteHeader";
+import { useChatComposer } from "@/hooks/useChatComposer";
+import { useMessageSearch } from "@/hooks/useMessageSearch";
+import {
+    ChatChannel,
+    ChatMessage,
+    OnlineCountResponse,
+} from "@/types/Community";
 
 import {
     Hash,
@@ -28,43 +35,8 @@ import {
 } from "lucide-react";
 
 
-/* =========================================================
-   TYPES
-========================================================= */
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
 
-type ChatChannel = {
-    id: string;
-    name: string;
-    description: string;
-};
-
-type ChatMessage = {
-    id: string;
-    channelId: string;
-    userId: string;
-    userName: string;
-    githubUsername: string | null;
-    message: string;
-    createdAt: string;
-};
-
-type OnlineCountResponse = {
-    count: number;
-};
-
-
-/* =========================================================
-   BACKEND
-========================================================= */
-
-const BACKEND_URL =
-    process.env.NEXT_PUBLIC_BACKEND_URL ||
-    "http://localhost:8080";
-
-
-/* =========================================================
-   PAGE
-========================================================= */
 
 export default function CommunityPage() {
 
@@ -76,15 +48,6 @@ export default function CommunityPage() {
     } = useAuth();
 
 
-    useEffect(() => {
-        console.log("[Community] user:", user);
-        console.log("[Community] authLoading:", authLoading);
-    }, [user, authLoading]);
-
-    /* =====================================================
-       STATE
-    ===================================================== */
-
     const [channels, setChannels] =
         useState<ChatChannel[]>([]);
 
@@ -94,9 +57,6 @@ export default function CommunityPage() {
     const [messages, setMessages] =
         useState<ChatMessage[]>([]);
 
-    const [messageInput, setMessageInput] =
-        useState("");
-
     const [onlineCount, setOnlineCount] =
         useState(0);
 
@@ -105,17 +65,6 @@ export default function CommunityPage() {
 
     const [loadingMessages, setLoadingMessages] =
         useState(false);
-
-    const [sending, setSending] =
-        useState(false);
-
-    const [searchQuery, setSearchQuery] =
-        useState("");
-
-
-    /* =====================================================
-       REFS
-    ===================================================== */
 
     const stompClientRef =
         useRef<Client | null>(null);
@@ -129,10 +78,22 @@ export default function CommunityPage() {
     const messagesEndRef =
         useRef<HTMLDivElement | null>(null);
 
+    const {
+        messageInput,
+        setMessageInput,
+        sending,
+        sendMessage,
+        handleKeyDown,
+    } = useChatComposer({
+        activeChannel,
+        clientRef: stompClientRef,
+    });
 
-    /* =====================================================
-       LOAD CHANNELS
-    ===================================================== */
+    const {
+        searchQuery,
+        setSearchQuery,
+        filteredMessages,
+    } = useMessageSearch(messages);
 
     const loadChannels = useCallback(
         async () => {
@@ -166,11 +127,6 @@ export default function CommunityPage() {
 
                 setChannels(result);
 
-
-                /*
-                 * Select first channel
-                 * automatically.
-                 */
 
                 if (result.length > 0) {
 
@@ -223,11 +179,6 @@ export default function CommunityPage() {
         []
     );
 
-
-    /* =====================================================
-       LOAD MESSAGES
-    ===================================================== */
-
     const loadMessages = useCallback(
         async (
             channelId: string
@@ -259,17 +210,6 @@ export default function CommunityPage() {
 
                 const result: ChatMessage[] =
                     await response.json();
-
-
-                /*
-                 * Backend returns newest first.
-                 *
-                 * Reverse it so the UI shows:
-                 *
-                 * oldest
-                 *   ↓
-                 * newest
-                 */
 
                 setMessages(
                     [...result].reverse()
@@ -303,11 +243,6 @@ export default function CommunityPage() {
         []
     );
 
-
-    /* =====================================================
-       LOAD CHANNELS AFTER LOGIN
-    ===================================================== */
-
     useEffect(() => {
 
         if (
@@ -323,11 +258,6 @@ export default function CommunityPage() {
         user,
         loadChannels,
     ]);
-
-
-    /* =====================================================
-       ACTIVE CHANNEL
-    ===================================================== */
 
     useEffect(() => {
 
@@ -349,17 +279,7 @@ export default function CommunityPage() {
         loadMessages,
     ]);
 
-
-    /* =====================================================
-       WEBSOCKET
-    ===================================================== */
-
     useEffect(() => {
-
-        /*
-         * Don't create a WebSocket connection
-         * when user isn't authenticated.
-         */
 
         if (
             authLoading ||
@@ -386,33 +306,9 @@ export default function CommunityPage() {
 
                 debug: (message) => {
 
-                    if (
-                        process.env.NODE_ENV ===
-                        "development"
-                    ) {
-
-                        console.log(
-                            "[STOMP]",
-                            message
-                        );
-                    }
                 },
 
-
-                /* =====================================
-                   CONNECTED
-                ===================================== */
-
                 onConnect: () => {
-
-                    console.log(
-                        "Connected to chat WebSocket"
-                    );
-
-
-                    /*
-                     * Online count
-                     */
 
                     client.subscribe(
                         "/topic/online-count",
@@ -429,12 +325,6 @@ export default function CommunityPage() {
                                     );
 
 
-                                console.log(
-                                    "Online count received:",
-                                    data.count
-                                );
-
-
                                 setOnlineCount(
                                     data.count
                                 );
@@ -449,20 +339,10 @@ export default function CommunityPage() {
                         }
                     );
 
-
-                    /*
-                     * Subscribe to current channel
-                     */
-
                     subscribeToChannel(
                         client
                     );
                 },
-
-
-                /* =====================================
-                   STOMP ERROR
-                ===================================== */
 
                 onStompError: (
                     frame
@@ -490,10 +370,6 @@ export default function CommunityPage() {
                 },
 
 
-                /* =====================================
-                   WEBSOCKET ERROR
-                ===================================== */
-
                 onWebSocketError: (
                     error
                 ) => {
@@ -513,23 +389,7 @@ export default function CommunityPage() {
                     );
                 },
 
-
-                /* =====================================
-                   CLOSED
-                ===================================== */
-
                 onWebSocketClose: () => {
-
-                    console.log(
-                        "Chat WebSocket disconnected"
-                    );
-
-                    /*
-                     * No toast here.
-                     *
-                     * STOMP automatically tries
-                     * to reconnect.
-                     */
                 },
             });
 
@@ -539,11 +399,6 @@ export default function CommunityPage() {
 
 
         client.activate();
-
-
-        /* ==========================================
-           CLEANUP
-        ========================================== */
 
         return () => {
 
@@ -568,11 +423,6 @@ export default function CommunityPage() {
         user,
     ]);
 
-
-    /* =====================================================
-       SUBSCRIBE TO CHANNEL
-    ===================================================== */
-
     const subscribeToChannel = (
         client: Client
     ) => {
@@ -589,19 +439,9 @@ export default function CommunityPage() {
             return;
         }
 
-
-        /*
-         * Remove previous subscription.
-         */
-
         channelSubscriptionRef
             .current
             ?.unsubscribe();
-
-
-        /*
-         * Subscribe to selected channel.
-         */
 
         const subscription =
             client.subscribe(
@@ -619,11 +459,6 @@ export default function CommunityPage() {
                             );
 
 
-                        /*
-                         * Ignore messages belonging
-                         * to another channel.
-                         */
-
                         if (
                             newMessage.channelId !==
                             activeChannelRef
@@ -637,12 +472,6 @@ export default function CommunityPage() {
 
                         setMessages(
                             (current) => {
-
-                                /*
-                                 * Prevent duplicate
-                                 * messages.
-                                 */
-
                                 const exists =
                                     current.some(
                                         (item) =>
@@ -683,11 +512,6 @@ export default function CommunityPage() {
             subscription;
     };
 
-
-    /* =====================================================
-       RE-SUBSCRIBE WHEN CHANNEL CHANGES
-    ===================================================== */
-
     useEffect(() => {
 
         activeChannelRef.current =
@@ -716,11 +540,6 @@ export default function CommunityPage() {
         activeChannel,
     ]);
 
-
-    /* =====================================================
-       AUTO SCROLL
-    ===================================================== */
-
     useEffect(() => {
 
         messagesEndRef.current
@@ -731,146 +550,6 @@ export default function CommunityPage() {
     }, [
         messages,
     ]);
-
-
-    /* =====================================================
-       SEND MESSAGE
-    ===================================================== */
-
-    const sendMessage = () => {
-
-        const message =
-            messageInput.trim();
-
-
-        /*
-         * Validation
-         */
-
-        if (!message) {
-
-            toast.error(
-                "Message cannot be empty."
-            );
-
-            return;
-        }
-
-
-        if (!activeChannel) {
-
-            toast.error(
-                "Please select a channel."
-            );
-
-            return;
-        }
-
-
-        if (sending) {
-            return;
-        }
-
-
-        const client =
-            stompClientRef.current;
-
-
-        /*
-         * WebSocket not connected
-         */
-
-        if (
-            !client ||
-            !client.connected
-        ) {
-
-            toast.error(
-                "Chat is not connected.",
-                {
-                    description:
-                        "Please wait a moment and try again.",
-                }
-            );
-
-            return;
-        }
-
-
-        try {
-
-            setSending(true);
-
-
-            client.publish({
-
-                destination:
-                    "/app/chat.send",
-
-                body:
-                    JSON.stringify({
-
-                        channelId:
-                            activeChannel.id,
-
-                        message,
-                    }),
-            });
-
-
-            /*
-             * Clear input immediately.
-             */
-
-            setMessageInput("");
-
-
-        } catch (error) {
-
-            console.error(
-                "Failed to send message:",
-                error
-            );
-
-
-            toast.error(
-                "Failed to send message.",
-                {
-                    description:
-                        "Please try again.",
-                }
-            );
-
-        } finally {
-
-            setSending(false);
-        }
-    };
-
-
-    /* =====================================================
-       ENTER KEY
-    ===================================================== */
-
-    const handleKeyDown = (
-        event: React.KeyboardEvent<HTMLInputElement>
-    ) => {
-
-        if (
-            event.key === "Enter" &&
-            !event.shiftKey
-        ) {
-
-            event.preventDefault();
-
-            sendMessage();
-        }
-    };
-
-
-    /* =====================================================
-       HELPERS
-    ===================================================== */
 
     const formatTime = (
         timestamp: string
@@ -901,50 +580,6 @@ export default function CommunityPage() {
         );
     };
 
-
-    /* =====================================================
-       FILTER MESSAGES
-    ===================================================== */
-
-    const filteredMessages =
-        messages.filter(
-            (message) => {
-
-                if (
-                    !searchQuery.trim()
-                ) {
-
-                    return true;
-                }
-
-
-                const query =
-                    searchQuery
-                        .toLowerCase()
-                        .trim();
-
-
-                return (
-                    message.message
-                        .toLowerCase()
-                        .includes(query) ||
-
-                    message.userName
-                        .toLowerCase()
-                        .includes(query) ||
-
-                    message.githubUsername
-                        ?.toLowerCase()
-                        .includes(query)
-                );
-            }
-        );
-
-
-    /* =====================================================
-       AUTH LOADING
-    ===================================================== */
-
     if (authLoading) {
 
         return (
@@ -959,11 +594,6 @@ export default function CommunityPage() {
             </main>
         );
     }
-
-
-    /* =====================================================
-       LOGIN REQUIRED
-    ===================================================== */
 
     if (!user) {
         return (
@@ -1008,10 +638,6 @@ export default function CommunityPage() {
         );
     }
 
-    /* =====================================================
-       MAIN COMMUNITY PAGE
-    ===================================================== */
-
     return (
 
         <main className="community-page">
@@ -1021,15 +647,7 @@ export default function CommunityPage() {
 
             <div className="community-layout">
 
-
-                {/* =================================================
-                   LEFT SIDEBAR
-                ================================================= */}
-
                 <aside className="community-sidebar">
-
-
-                    {/* INTRO */}
 
                     <div className="community-intro">
 
@@ -1058,9 +676,6 @@ export default function CommunityPage() {
                         </div>
 
                     </div>
-
-
-                    {/* CHANNELS */}
 
                     <div className="channel-list">
 
@@ -1136,9 +751,6 @@ export default function CommunityPage() {
 
                     </div>
 
-
-                    {/* GUIDELINE */}
-
                     <div className="community-guideline-card">
 
                         <div className="guideline-icon">
@@ -1170,16 +782,7 @@ export default function CommunityPage() {
 
                 </aside>
 
-
-                {/* =================================================
-                   CENTER CHAT
-                ================================================= */}
-
                 <section className="chat-panel">
-
-
-                    {/* HEADER */}
-
                     <header className="chat-header">
 
 
@@ -1282,8 +885,6 @@ export default function CommunityPage() {
                     </div>
 
 
-                    {/* MESSAGES */}
-
                     <div className="messages-container">
 
 
@@ -1339,9 +940,6 @@ export default function CommunityPage() {
                                         }
                                     >
 
-
-                                        {/* AVATAR */}
-
                                         <div className="message-avatar">
 
                                             {getInitial(
@@ -1349,9 +947,6 @@ export default function CommunityPage() {
                                             )}
 
                                         </div>
-
-
-                                        {/* MESSAGE */}
 
                                         <div className="message-content">
 
@@ -1410,9 +1005,6 @@ export default function CommunityPage() {
                         />
 
                     </div>
-
-
-                    {/* MESSAGE COMPOSER */}
 
                     <div className="message-composer">
 
@@ -1494,15 +1086,7 @@ export default function CommunityPage() {
 
                 </section>
 
-
-                {/* =================================================
-                   RIGHT SIDEBAR
-                ================================================= */}
-
                 <aside className="community-rightbar">
-
-
-                    {/* ONLINE CARD */}
 
                     <div className="online-card">
 
@@ -1542,9 +1126,6 @@ export default function CommunityPage() {
 
                         </div>
 
-
-                        {/* SEARCH USERS */}
-
                         <div className="user-search">
 
                             <Search
@@ -1556,10 +1137,6 @@ export default function CommunityPage() {
                             />
 
                         </div>
-
-
-                        {/* ONLINE USERS */}
-
                         <div className="online-users">
 
                             {Array.from(
@@ -1630,9 +1207,6 @@ export default function CommunityPage() {
 
                         </div>
 
-
-                        {/* VIEW MEMBERS */}
-
                         <button
                             type="button"
                             className="view-members-button"
@@ -1654,11 +1228,6 @@ export default function CommunityPage() {
                         </button>
 
                     </div>
-
-
-                    {/* =================================================
-                       GUIDELINES
-                    ================================================= */}
 
                     <div className="guidelines-card">
 

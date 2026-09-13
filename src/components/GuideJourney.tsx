@@ -92,8 +92,6 @@ export default function GuideJourney() {
         <section className="guideJourney">
 
             <div className="guideJourneyContainer">
-
-                {/* HEADER */}
                 <div className="guideJourneyHeader">
 
                     <div className="guideJourneyHeaderContent">

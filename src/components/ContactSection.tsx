@@ -92,8 +92,6 @@ export default function ContactSection() {
 
                         <div className="contactDetails">
 
-                            {/* Email */}
-
                             <div className="contactDetail">
                                 <div className="contactDetailIcon">
                                     <Mail size={21} />
@@ -108,7 +106,6 @@ export default function ContactSection() {
                                 </div>
                             </div>
 
-                            {/* Community */}
 
                             <div className="contactDetail">
                                 <div className="contactDetailIcon">
@@ -123,8 +120,6 @@ export default function ContactSection() {
                                     </strong>
                                 </div>
                             </div>
-
-                            {/* Built For */}
 
                             <div className="contactDetail">
                                 <div className="contactDetailIcon">
@@ -147,15 +142,11 @@ export default function ContactSection() {
                         </div>
                     </div>
 
-                    {/* RIGHT SIDE */}
-
                     <div className="contactFormWrapper">
                         <form
                             className="contactForm"
                             onSubmit={handleSubmit}
                         >
-
-                            {/* Name + Email */}
 
                             <div className="contactFormRow">
 
@@ -191,7 +182,6 @@ export default function ContactSection() {
 
                             </div>
 
-                            {/* Subject */}
 
                             <div className="contactField">
                                 <label htmlFor="subject">
@@ -207,7 +197,6 @@ export default function ContactSection() {
                                 />
                             </div>
 
-                            {/* Message */}
 
                             <div className="contactField">
                                 <label htmlFor="message">
@@ -222,8 +211,6 @@ export default function ContactSection() {
                                     required
                                 />
                             </div>
-
-                            {/* Submit */}
 
                             <button
                                 type="submit"

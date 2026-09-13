@@ -112,12 +112,6 @@ export default function RepoTabOrg({
                 await response.json();
 
 
-            console.log(
-                "Repositories response:",
-                result
-            );
-
-
             const apiData = result.data;
 
 
