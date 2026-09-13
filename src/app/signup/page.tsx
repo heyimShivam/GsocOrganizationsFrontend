@@ -1,6 +1,4 @@
-
 "use client";
-
 import Link from "next/link";
 import { useState } from "react";
 import {
@@ -16,8 +14,11 @@ import {
 
 import { toast } from "sonner";
 import "@/css/Auth.css";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function SignupPage() {
+    const router = useRouter();
+    const searchParams = useSearchParams();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] =
         useState(false);
@@ -42,7 +43,7 @@ export default function SignupPage() {
 
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BACKEND_URL} /api/auth / signup`,
+                `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/signup`,
                 {
                     method: "POST",
                     headers: {
@@ -55,29 +56,36 @@ export default function SignupPage() {
             const result = await response.json();
 
             if (!response.ok) {
-                toast.error("Signup failed!", {
-                    description:
-                        result.message ||
-                        "Something went wrong. Please try again.",
-                });
-
-                return;
+                throw new Error(
+                    result.message ||
+                    "Something went wrong. Please try again."
+                );
             }
 
-            console.log("Signup successful:", result);
+            console.log("Registration successful:", result);
 
-            toast.success("Signup successful!", {
+            toast.success("Registration successful!", {
                 description:
                     result.message ||
                     "Registration successful. Please verify your email.",
             });
 
+            const redirectUrl = searchParams.get("redirect");
+
+            if (redirectUrl) {
+                router.push(redirectUrl);
+            } else {
+                router.push("/");
+            }
+
         } catch (error) {
             console.error("Signup error:", error);
 
-            toast.error("Failed to signup!", {
+            toast.error("Signup failed!", {
                 description:
-                    "Something went wrong. Please try again.",
+                    error instanceof Error
+                        ? error.message
+                        : "Something went wrong. Please try again.",
             });
         }
     };

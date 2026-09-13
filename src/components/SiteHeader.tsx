@@ -17,6 +17,7 @@ import { useAuth } from "@/context/AuthContext";
 const navItems = [
     { label: "Explore", href: "/explore" },
     { label: "Guide", href: "/guide" },
+    { label: "Community", href: "/community" },
 ];
 
 export function SiteHeader({

@@ -10,13 +10,17 @@ import {
 
 import { toast } from "sonner";
 
+/* =========================================================
+   TYPES
+========================================================= */
+
 export type User = {
     id: string;
     name: string;
     email: string;
     role: string;
     description: string;
-    githubUsername: string;
+    githubUsername: string | null;
     quote: string;
     bookmarkedOrganizationIds: string[];
 
@@ -24,9 +28,11 @@ export type User = {
         self?: {
             href: string;
         };
+
         bookmarks?: {
             href: string;
         };
+
         logout?: {
             href: string;
         };
@@ -35,27 +41,43 @@ export type User = {
 
 export type AuthContextType = {
     user: User | null;
+
     setUser: (user: User | null) => void;
+
     logout: () => Promise<void>;
+
     loading: boolean;
+
+    refreshUser: () => Promise<User | null>;
 };
+
+/* =========================================================
+   CONTEXT
+========================================================= */
 
 const AuthContext = createContext<
     AuthContextType | undefined
 >(undefined);
+
+/* =========================================================
+   PROVIDER
+========================================================= */
 
 export function AuthProvider({
     children,
 }: {
     children: ReactNode;
 }) {
-    const [user, setUser] = useState<User | null>(null);
-    const [loading, setLoading] = useState(true);
+    const [user, setUser] =
+        useState<User | null>(null);
 
-    /*
-     * Get currently authenticated user
-     * from the backend session.
-     */
+    const [loading, setLoading] =
+        useState(true);
+
+    /* =====================================================
+       LOAD CURRENT USER
+    ===================================================== */
+
     useEffect(() => {
         const loadCurrentUser = async () => {
             try {
@@ -64,38 +86,158 @@ export function AuthProvider({
                     {
                         method: "GET",
                         credentials: "include",
+                        cache: "no-store",
                     }
                 );
 
-                if (!response.ok) {
-                    // Not logged in
+                /*
+                 * 401 is expected when the visitor
+                 * is not logged in.
+                 *
+                 * Do NOT redirect here.
+                 *
+                 * The page decides what to do:
+                 *
+                 * Community → show login modal
+                 * Protected page → redirect to login
+                 */
+
+                if (response.status === 401) {
+                    console.log(
+                        "[Auth] No authenticated user"
+                    );
+
                     setUser(null);
+
                     return;
                 }
+
+                /*
+                 * Any other non-success response
+                 * is an actual error.
+                 */
+
+                if (!response.ok) {
+                    throw new Error(
+                        `Failed to load current user: ${response.status}`
+                    );
+                }
+
+                /*
+                 * Authenticated user.
+                 */
 
                 const result: User =
                     await response.json();
 
+                console.log(
+                    "[Auth] Authenticated user:",
+                    result
+                );
+
                 setUser(result);
+
             } catch (error) {
+                /*
+                 * Network/server error.
+                 *
+                 * We still treat the user as logged out
+                 * so the application doesn't get stuck.
+                 */
+
                 console.error(
-                    "Failed to load current user:",
+                    "[Auth] Failed to load current user:",
                     error
                 );
 
                 setUser(null);
+
             } finally {
+
                 setLoading(false);
+
+                console.log(
+                    "[Auth] Authentication loading finished"
+                );
             }
         };
 
         loadCurrentUser();
     }, []);
 
-    /*
-     * Logout
-     */
-    const logout = async () => {
+    /* =====================================================
+       REFRESH CURRENT USER
+    ===================================================== */
+
+    const refreshUser =
+        async (): Promise<User | null> => {
+            try {
+                const response = await fetch(
+                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/me`,
+                    {
+                        method: "GET",
+                        credentials: "include",
+                        cache: "no-store",
+                    }
+                );
+
+                /*
+                 * User is simply not authenticated.
+                 */
+
+                if (response.status === 401) {
+                    console.log(
+                        "[Auth] Refresh: user is not authenticated"
+                    );
+
+                    setUser(null);
+
+                    return null;
+                }
+
+                /*
+                 * Actual backend error.
+                 */
+
+                if (!response.ok) {
+                    throw new Error(
+                        `Failed to refresh current user: ${response.status}`
+                    );
+                }
+
+                /*
+                 * Authenticated user.
+                 */
+
+                const result: User =
+                    await response.json();
+
+                setUser(result);
+
+                console.log(
+                    "[Auth] User refreshed:",
+                    result
+                );
+
+                return result;
+
+            } catch (error) {
+                console.error(
+                    "[Auth] Failed to refresh current user:",
+                    error
+                );
+
+                setUser(null);
+
+                return null;
+            }
+        };
+
+    /* =====================================================
+       LOGOUT
+    ===================================================== */
+
+    const logout = async (): Promise<void> => {
         try {
             const response = await fetch(
                 `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/logout`,
@@ -103,30 +245,51 @@ export function AuthProvider({
                     method: "POST",
                     credentials: "include",
                     headers: {
-                        "Content-Type": "application/json",
+                        "Content-Type":
+                            "application/json",
                     },
                 }
             );
 
             if (!response.ok) {
-                throw new Error(`Logout failed: ${response.status} `);
+                throw new Error(
+                    `Logout failed: ${response.status}`
+                );
             }
+
+            /*
+             * Remove user from React state.
+             */
 
             setUser(null);
 
-            toast.success("Logged out successfully!", {
-                description: "See you again soon.",
-            });
+            toast.success(
+                "Logged out successfully!",
+                {
+                    description:
+                        "See you again soon.",
+                }
+            );
 
         } catch (error) {
-            console.error("Logout error:", error);
+            console.error(
+                "[Auth] Logout error:",
+                error
+            );
 
-            toast.error("Logout failed!", {
-                description: "Something went wrong. Please try again.",
-            });
+            toast.error(
+                "Logout failed!",
+                {
+                    description:
+                        "Something went wrong. Please try again.",
+                }
+            );
         }
     };
 
+    /* =====================================================
+       CONTEXT PROVIDER
+    ===================================================== */
 
     return (
         <AuthContext.Provider
@@ -135,6 +298,7 @@ export function AuthProvider({
                 setUser,
                 logout,
                 loading,
+                refreshUser,
             }}
         >
             {children}
@@ -142,8 +306,13 @@ export function AuthProvider({
     );
 }
 
+/* =========================================================
+   USE AUTH
+========================================================= */
+
 export function useAuth() {
-    const context = useContext(AuthContext);
+    const context =
+        useContext(AuthContext);
 
     if (!context) {
         throw new Error(
