@@ -15,14 +15,12 @@ import "./GuideHeader.css";
 export default function GuideHeader() {
     return (
         <section className="guideHeader">
-            {/* Background */}
             <div className="guideHeaderBackground" aria-hidden="true">
                 <div className="guideHeaderGlow guideHeaderGlowLeft" />
                 <div className="guideHeaderGlow guideHeaderGlowRight" />
             </div>
 
             <div className="guideHeaderContainer">
-                {/* LEFT */}
                 <div className="guideHeaderContent">
                     <div className="guideHeaderBadge">
                         <span className="guideHeaderBadgeDot" />
@@ -70,11 +68,8 @@ export default function GuideHeader() {
                     </div>
                 </div>
 
-                {/* RIGHT VISUAL */}
                 <div className="guideHeaderVisual">
                     <div className="guideVisualAmbient" />
-
-                    {/* Background code panel */}
                     <div className="guideCodePanel">
                         <div className="guideCodePanelDot" />
 
@@ -95,8 +90,6 @@ export default function GuideHeader() {
                             <span className="guideCodeCaret" />
                         </div>
                     </div>
-
-                    {/* Annotation */}
                     <div className="guideVisualNote">
                         <span>Open Source</span>
                         <small>A Brighter Tomorrow</small>
@@ -140,9 +133,7 @@ export default function GuideHeader() {
                         </div>
                     </div>
 
-                    {/* Main visual cards */}
                     <div className="guideVisualCards">
-                        {/* Ideas */}
                         <div className="guideVisualCard guideVisualCardIdeas">
                             <div className="guideVisualCardIcon">
                                 <Lightbulb size={25} />
@@ -151,7 +142,6 @@ export default function GuideHeader() {
                             <span>Ideas</span>
                         </div>
 
-                        {/* Code - primary */}
                         <div className="guideVisualCard guideVisualCardCode">
                             <div className="guideVisualCardIcon">
                                 <Code2 size={29} />
@@ -160,7 +150,6 @@ export default function GuideHeader() {
                             <span>Code</span>
                         </div>
 
-                        {/* Impact */}
                         <div className="guideVisualCard guideVisualCardImpact">
                             <div className="guideVisualCardIcon">
                                 <UsersRound size={25} />
@@ -170,7 +159,6 @@ export default function GuideHeader() {
                         </div>
                     </div>
 
-                    {/* Bottom journey */}
                     <div className="guideVisualJourney">
                         <span>Students</span>
                         <ChevronsRight size={14} />

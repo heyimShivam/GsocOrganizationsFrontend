@@ -239,9 +239,6 @@ export default function ProfilePage() {
                 );
             }
 
-            /*
-             * Backend may return the updated user.
-             */
             const updatedUser =
                 await response.json();
 
@@ -304,9 +301,6 @@ export default function ProfilePage() {
                 );
             }
 
-            /*
-             * Remove organization from UI
-             */
             setOrganizations((previous) =>
                 previous.filter(
                     (organization) =>
@@ -315,9 +309,6 @@ export default function ProfilePage() {
                 )
             );
 
-            /*
-             * Update AuthContext
-             */
             setUser({
                 ...user,
                 bookmarkedOrganizationIds:
@@ -352,9 +343,6 @@ export default function ProfilePage() {
         }
     };
 
-    /*
-     * User initials
-     */
     const initials = useMemo(() => {
         if (!user?.name) {
             return "U";
@@ -376,9 +364,6 @@ export default function ProfilePage() {
         ).toUpperCase();
     }, [user?.name]);
 
-    /*
-     * Number of unique technologies
-     */
     const technologyCount = useMemo(() => {
         const technologies = organizations.flatMap(
             (organization) =>
@@ -388,9 +373,6 @@ export default function ProfilePage() {
         return new Set(technologies).size;
     }, [organizations]);
 
-    /*
-     * Number of unique categories
-     */
     const categoryCount = useMemo(() => {
         const categories = organizations.flatMap(
             (organization) =>
@@ -519,9 +501,6 @@ export default function ProfilePage() {
                     </div>
                 </section>
 
-                {/* =========================
-                    STATS
-                ========================== */}
                 <section className="profileStats">
                     <div className="profileStatCard profileStatBlue">
                         <div className="profileStatIcon">
@@ -598,9 +577,6 @@ export default function ProfilePage() {
                     </div>
                 </section>
 
-                {/* =========================
-                    BOOKMARK SECTION
-                ========================== */}
                 <section className="profileBookmarksSection">
                     <div className="profileSectionHeader">
                         <div>
@@ -685,9 +661,6 @@ export default function ProfilePage() {
                 </section>
             </div>
 
-            {/* =========================
-                EDIT PROFILE MODAL
-            ========================== */}
             {editModalOpen && (
                 <div
                     className="profileModalBackdrop"

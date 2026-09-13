@@ -89,17 +89,11 @@ export default function ExplorerPage() {
             topics: false
         });
 
-    /*
-     * Available filter values from backend
-     */
     const categoryOptions = filters.categories;
     const technologyOptions = filters.technologies;
     const topicOptions = filters.topics;
     const yearOptions = filters.years;
 
-    /*
-     * Fetch all available filters
-     */
     useEffect(() => {
         const fetchAllFilters = async () => {
             try {
@@ -127,9 +121,6 @@ export default function ExplorerPage() {
         fetchAllFilters();
     }, []);
 
-    /*
-     * Debounce organization search
-     */
     useEffect(() => {
         const timer = setTimeout(() => {
             setDebouncedSearch(searchOrgsName);
@@ -141,9 +132,6 @@ export default function ExplorerPage() {
         };
     }, [searchOrgsName]);
 
-    /*
-     * Fetch organizations
-     */
     useEffect(() => {
         const controller = new AbortController();
 
@@ -204,10 +192,6 @@ export default function ExplorerPage() {
                 const responseData =
                     await response.json();
 
-                /*
-                 * Replace current organizations
-                 * with the new backend response.
-                 */
                 setOrganizations(
                     responseData.data.content
                 );
@@ -248,9 +232,6 @@ export default function ExplorerPage() {
         sort
     ]);
 
-    /*
-     * Filter search
-     */
     const normalizedFilterQuery =
         filterQuery.toLowerCase();
 
@@ -268,9 +249,6 @@ export default function ExplorerPage() {
             .toLowerCase()
             .includes(normalizedFilterQuery);
 
-    /*
-     * Year selection
-     */
     const toggleYear = (year: number) => {
         setSelectedYears((old) =>
             old.includes(year)
@@ -283,9 +261,6 @@ export default function ExplorerPage() {
         setCurrentPage(1);
     };
 
-    /*
-     * Category / Technology / Topic selection
-     */
     const toggleSelection = (
         value: string,
         setSelection: React.Dispatch<
@@ -303,9 +278,6 @@ export default function ExplorerPage() {
         setCurrentPage(1);
     };
 
-    /*
-     * Clear all filters
-     */
     const clearFilters = () => {
         setSelectedYears([]);
         setSelectedCategories([]);
@@ -316,9 +288,6 @@ export default function ExplorerPage() {
         setCurrentPage(1);
     };
 
-    /*
-     * Render category / technology / topic pills
-     */
     const renderSelectableOptions = (
         options: string[],
         selected: string[],
@@ -464,7 +433,6 @@ export default function ExplorerPage() {
                             )}
                     </section>
 
-                    {/* CATEGORIES / TECHNOLOGIES / TOPICS */}
                     {(
                         [
                             [

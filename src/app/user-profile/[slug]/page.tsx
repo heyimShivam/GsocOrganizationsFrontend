@@ -54,12 +54,6 @@ export default function PublicUserProfilePage() {
     const [error, setError] =
         useState(false);
 
-    /*
-     * =========================================================
-     * LOAD PUBLIC USER PROFILE
-     * =========================================================
-     */
-
     useEffect(() => {
         if (!slug) {
             return;
@@ -108,12 +102,6 @@ export default function PublicUserProfilePage() {
 
         loadUserProfile();
     }, [slug]);
-
-    /*
-     * =========================================================
-     * LOAD BOOKMARKED ORGANIZATIONS
-     * =========================================================
-     */
 
     useEffect(() => {
         if (!user) {
@@ -179,11 +167,6 @@ export default function PublicUserProfilePage() {
         loadOrganizations();
     }, [user]);
 
-    /*
-     * =========================================================
-     * USER INITIALS
-     * =========================================================
-     */
 
     const initials = useMemo(() => {
         if (!user?.name) {
@@ -206,12 +189,6 @@ export default function PublicUserProfilePage() {
         ).toUpperCase();
     }, [user?.name]);
 
-    /*
-     * =========================================================
-     * TECHNOLOGY COUNT
-     * =========================================================
-     */
-
     const technologyCount = useMemo(() => {
         const technologies =
             organizations.flatMap(
@@ -222,12 +199,6 @@ export default function PublicUserProfilePage() {
         return new Set(technologies).size;
     }, [organizations]);
 
-    /*
-     * =========================================================
-     * CATEGORY COUNT
-     * =========================================================
-     */
-
     const categoryCount = useMemo(() => {
         const categories =
             organizations.flatMap(
@@ -237,12 +208,6 @@ export default function PublicUserProfilePage() {
 
         return new Set(categories).size;
     }, [organizations]);
-
-    /*
-     * =========================================================
-     * DISPLAY ROLE
-     * =========================================================
-     */
 
     const displayRole = useMemo(() => {
         if (!user?.role) {
@@ -256,12 +221,6 @@ export default function PublicUserProfilePage() {
         return "User";
     }, [user?.role]);
 
-    /*
-     * =========================================================
-     * LOADING
-     * =========================================================
-     */
-
     if (loading) {
         return (
             <main className="profileLoading">
@@ -273,12 +232,6 @@ export default function PublicUserProfilePage() {
             </main>
         );
     }
-
-    /*
-     * =========================================================
-     * PROFILE NOT FOUND
-     * =========================================================
-     */
 
     if (error || !user) {
         return (
@@ -302,11 +255,6 @@ export default function PublicUserProfilePage() {
         );
     }
 
-    /*
-     * =========================================================
-     * PUBLIC PROFILE
-     * =========================================================
-     */
 
     return (
         <main className="app-shell profileShell publicProfileShell">
@@ -315,21 +263,13 @@ export default function PublicUserProfilePage() {
 
             <div className="profilePage">
 
-                {/* =================================================
-                    PUBLIC PROFILE HERO
-                ================================================== */}
-
                 <section className="profileHero">
 
                     <div className="profileIdentity">
 
-                        {/* Avatar */}
-
                         <div className="profileAvatar">
                             {initials}
                         </div>
-
-                        {/* Identity */}
 
                         <div className="profileIdentityInfo">
 
@@ -341,8 +281,6 @@ export default function PublicUserProfilePage() {
                                 {user.description ||
                                     "Exploring open source, one organization at a time."}
                             </p>
-
-                            {/* GitHub */}
 
                             {user.githubUsername && (
                                 <a
@@ -369,8 +307,6 @@ export default function PublicUserProfilePage() {
 
                     </div>
 
-                    {/* Quote */}
-
                     <div className="profileQuote">
 
                         <div className="profileQuoteIcon">
@@ -395,13 +331,7 @@ export default function PublicUserProfilePage() {
 
                 </section>
 
-                {/* =================================================
-                    PUBLIC STATS
-                ================================================== */}
-
                 <section className="profileStats">
-
-                    {/* Bookmarks */}
 
                     <div className="profileStatCard profileStatBlue">
 
@@ -427,8 +357,6 @@ export default function PublicUserProfilePage() {
 
                     </div>
 
-                    {/* Technologies */}
-
                     <div className="profileStatCard profileStatPurple">
 
                         <div className="profileStatIcon">
@@ -449,8 +377,6 @@ export default function PublicUserProfilePage() {
 
                     </div>
 
-                    {/* Categories */}
-
                     <div className="profileStatCard profileStatGreen">
 
                         <div className="profileStatIcon">
@@ -470,8 +396,6 @@ export default function PublicUserProfilePage() {
                         </div>
 
                     </div>
-
-                    {/* GitHub */}
 
                     <div className="profileStatCard profileStatGold">
 
@@ -496,10 +420,6 @@ export default function PublicUserProfilePage() {
                     </div>
 
                 </section>
-
-                {/* =================================================
-                    BOOKMARKED ORGANIZATIONS
-                ================================================== */}
 
                 <section className="profileBookmarksSection">
 
@@ -528,8 +448,6 @@ export default function PublicUserProfilePage() {
 
                     </div>
 
-                    {/* Loading */}
-
                     {organizationsLoading ? (
 
                         <div className="profileBookmarksLoading">
@@ -544,8 +462,6 @@ export default function PublicUserProfilePage() {
                         </div>
 
                     ) : organizations.length === 0 ? (
-
-                        /* No bookmarks */
 
                         <div className="profileNoBookmarks">
 
@@ -567,8 +483,6 @@ export default function PublicUserProfilePage() {
 
                     ) : (
 
-                        /* Organization cards */
-
                         <div className="profileOrganizationGrid">
 
                             {organizations.map(
@@ -589,10 +503,6 @@ export default function PublicUserProfilePage() {
                     )}
 
                 </section>
-
-                {/* =================================================
-                    PUBLIC PROFILE INFORMATION
-                ================================================== */}
 
                 <section className="publicProfileAbout">
 

@@ -340,25 +340,12 @@ export default function OrganizationDetailPage() {
             </section>
 
             <section className="detail-content">
-                {/*
-                 * Kept exactly as your existing
-                 * hardcoded component.
-                 */}
                 {tab === "Overview" && (
                     <OverviewContent data={organization} projectsPerYear={projectsPerYear} />
                 )}
-
-                {/*
-                 * Projects now use your backend
-                 * projectsPerYear endpoint.
-                 */}
                 {tab === "Projects" && (
                     <>
                         {projectsPerYear.length === 0 ? (
-                            /*
-                             * Keep your existing hardcoded
-                             * ProjectPreview as fallback.
-                             */
                             <ProjectPreview />
                         ) : (
                             <section>
@@ -369,11 +356,6 @@ export default function OrganizationDetailPage() {
                         )}
                     </>
                 )}
-
-                {/*
-                 * Repositories use your backend
-                 * repositories endpoint.
-                 */}
                 {tab ===
                     "Repositories" && (
                         <section>
@@ -400,10 +382,6 @@ export default function OrganizationDetailPage() {
                     />
                 )}
 
-                {/*
-                 * Existing hardcoded contributor
-                 * component is preserved.
-                 */}
                 {tab === "Contributors" && (
                     <ContributorPreview orgId={organizationId} />
                 )}

@@ -1,864 +1,524 @@
-/* ========================================
-   HERO
-======================================== */
-
 .home-hero {
     position: relative;
     min-height: calc(100vh - 64px);
     overflow: hidden;
-
     padding-top: 90px;
-
     background: #020817;
 }
 
-
-/* ========================================
-   HERO CONTENT
-======================================== */
-
 .hero-content {
     position: relative;
-
     z-index: 2;
-
     width: min(100% - 40px, 900px);
-
     margin: 0 auto;
-
     display: flex;
     flex-direction: column;
-
     align-items: center;
     text-align: center;
-
     padding: 50px 0 80px;
 }
 
-
-/* ========================================
-   BADGE
-======================================== */
-
 .hero-badge {
     display: inline-flex;
-
     align-items: center;
     gap: 8px;
-
     padding: 8px 14px;
-
     margin-bottom: 24px;
-
     border: 1px solid rgba(96, 165, 250, 0.3);
-
     border-radius: 999px;
-
     background: rgba(15, 23, 42, 0.9);
-
     color: #93c5fd;
-
     font-size: 12px;
     font-weight: 600;
-
     letter-spacing: 0.08em;
 }
 
-
-/* ========================================
-   TITLE
-======================================== */
-
-
 .hero-title {
     display: flex;
-
     flex-direction: column;
-
     margin: 0;
-
     color: #f8fafc;
-
     font-size: clamp(42px, 6vw, 76px);
-
     font-weight: 750;
-
     line-height: 1.05;
-
     letter-spacing: -0.04em;
 }
 
-
 .hero-title span {
     margin-top: 6px;
-
-    background: linear-gradient(90deg,
-            #60a5fa,
-            #3b82f6,
-            #2563eb);
-
+    background: linear-gradient(90deg, #60a5fa, #3b82f6, #2563eb);
     -webkit-background-clip: text;
     background-clip: text;
-
     -webkit-text-fill-color: transparent;
 }
 
-
-/* ========================================
-   DESCRIPTION
-======================================== */
-
 .hero-description {
     max-width: 670px;
-
     margin: 26px auto 0;
-
     color: #94a3b8;
-
     font-size: clamp(16px, 2vw, 19px);
-
     line-height: 1.7;
 }
 
-
-/* ========================================
-   ACTIONS
-======================================== */
-
 .hero-actions {
     display: flex;
-
     align-items: center;
     justify-content: center;
-
     gap: 14px;
-
     margin-top: 34px;
 }
-
 
 .primary-button,
 .secondary-button {
     display: inline-flex;
-
     align-items: center;
     justify-content: center;
-
     gap: 10px;
-
     min-height: 48px;
-
     padding: 0 22px;
-
     border-radius: 10px;
-
     font-size: 15px;
     font-weight: 600;
-
     text-decoration: none;
-
     transition:
         transform 0.2s ease,
         background 0.2s ease,
         border-color 0.2s ease;
 }
 
-
 .primary-button {
     color: #ffffff;
-
     background: #2563eb;
-
     border: 1px solid #3b82f6;
 }
 
-
 .primary-button:hover {
     transform: translateY(-2px);
-
     background: #1d4ed8;
 }
 
-
 .secondary-button {
     color: #cbd5e1;
-
     background: transparent;
-
     border: 1px solid rgba(148, 163, 184, 0.3);
 }
 
-
 .secondary-button:hover {
     transform: translateY(-2px);
-
     color: #ffffff;
-
     border-color: rgba(96, 165, 250, 0.6);
-
     background: rgba(30, 41, 59, 0.7);
 }
 
-
-/* ========================================
-   FEATURES
-======================================== */
-
 .hero-features {
     display: flex;
-
     align-items: center;
     justify-content: center;
-
     gap: 30px;
-
     margin-top: 60px;
-
     color: #94a3b8;
 }
 
-
 .hero-feature {
     display: flex;
-
     flex-direction: column;
-
     gap: 5px;
-
     min-width: 120px;
 }
 
-
 .hero-feature strong {
     color: #e2e8f0;
-
     font-size: 17px;
-
     font-weight: 700;
 }
-
 
 .hero-feature span {
     font-size: 13px;
 }
 
-
 .feature-divider {
     width: 1px;
-
     height: 40px;
-
     background: rgba(148, 163, 184, 0.2);
 }
 
-
-/* ========================================
-   EXPLORER PREVIEW
-======================================== */
-
 .explorer-preview-wrapper {
     position: relative;
-
     z-index: 2;
-
     width: min(100% - 80px, 1280px);
-
     margin: 0 auto 100px;
     margin-top: 70px;
+    perspective: 1400px;
 }
-
-
-/* ========================================
-   BROWSER WINDOW
-======================================== */
 
 .browser-window {
+    position: relative;
     width: 100%;
-
     overflow: hidden;
-
-    border: 1px solid rgba(96, 165, 250, 0.22);
-
+    background: linear-gradient(180deg, #0f172a 0%, #081225 100%);
+    border: 1px solid rgba(96, 165, 250, 0.32);
     border-radius: 16px;
-
-    background: #07111f;
-
     box-shadow:
-        0 30px 80px rgba(0, 0, 0, 0.45);
-
+        0 35px 90px rgba(0, 0, 0, 0.6),
+        0 25px 80px rgba(37, 99, 235, 0.28),
+        0 0 100px rgba(37, 99, 235, 0.16),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    transform-style: preserve-3d;
+    animation: browserFloat 6s ease-in-out infinite;
 }
-
-
-/* ========================================
-   BROWSER TOOLBAR
-======================================== */
 
 .browser-toolbar {
     height: 54px;
-
     display: flex;
-
     align-items: center;
-
     padding: 0 16px;
-
     border-bottom: 1px solid rgba(148, 163, 184, 0.12);
-
     background: #0b1423;
 }
 
-
 .browser-controls {
     display: flex;
-
     align-items: center;
-
     gap: 7px;
-
     width: 130px;
 }
 
-
 .browser-dot {
     width: 11px;
-
     height: 11px;
-
     border-radius: 50%;
 }
-
 
 .browser-dot-red {
     background: #ef4444;
 }
 
-
 .browser-dot-yellow {
     background: #f59e0b;
 }
-
 
 .browser-dot-green {
     background: #22c55e;
 }
 
-
 .browser-address {
     flex: 1;
-
     max-width: 560px;
-
     height: 32px;
-
     display: flex;
-
     align-items: center;
     justify-content: center;
-
     gap: 8px;
-
     margin: 0 auto;
-
     border: 1px solid rgba(148, 163, 184, 0.15);
-
     border-radius: 8px;
-
     background: #08111f;
-
     color: #64748b;
-
     font-size: 12px;
 }
-
 
 .browser-address-icon {
     display: flex;
-
     color: #60a5fa;
 }
 
-
 .browser-actions {
     width: 130px;
-
     display: flex;
-
     justify-content: flex-end;
-
     gap: 14px;
-
     color: #64748b;
 }
-
-
-/* ========================================
-   BROWSER CONTENT
-======================================== */
 
 .browser-content {
     display: flex;
-
     min-height: 520px;
-
     background: #030b18;
 }
 
-
-/* ========================================
-   SIDEBAR
-======================================== */
-
 .preview-sidebar {
     width: 210px;
-
     flex-shrink: 0;
-
     padding: 20px 14px;
-
     border-right: 1px solid rgba(96, 165, 250, 0.14);
-
     background: #07111f;
 }
 
-
 .preview-sidebar-title {
     margin-bottom: 16px;
-
     color: #e2e8f0;
-
     font-size: 14px;
-
     font-weight: 700;
 }
 
-
 .preview-filter-search {
     display: flex;
-
     align-items: center;
-
     gap: 8px;
-
     height: 36px;
-
     padding: 0 10px;
-
     border: 1px solid rgba(96, 165, 250, 0.25);
-
     border-radius: 7px;
-
     color: #64748b;
-
     font-size: 11px;
 }
-
 
 .preview-filter-section {
     padding: 18px 0;
-
     border-bottom: 1px solid rgba(148, 163, 184, 0.12);
 }
-
 
 .preview-filter-heading {
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
-
     margin-bottom: 12px;
-
     color: #cbd5e1;
-
     font-size: 12px;
-
     font-weight: 600;
 }
 
-
 .preview-years {
     display: grid;
-
     gap: 8px;
 }
-
 
 .preview-years label {
     display: flex;
-
     align-items: center;
-
     gap: 8px;
-
     color: #64748b;
-
     font-size: 11px;
 }
 
-
 .preview-checkbox {
     width: 10px;
-
     height: 10px;
-
     border: 1px solid #475569;
-
     border-radius: 2px;
 }
 
-
 .preview-filter-row {
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
-
     padding: 16px 0;
-
     border-bottom: 1px solid rgba(148, 163, 184, 0.12);
-
     color: #94a3b8;
-
     font-size: 12px;
 }
-
 
 .preview-status {
     border-bottom: none;
 }
 
-
 .status-item {
     display: flex;
-
     align-items: center;
-
     gap: 7px;
-
     margin-top: 9px;
-
     color: #64748b;
-
     font-size: 11px;
 }
 
-
 .status-dot {
     width: 7px;
-
     height: 7px;
-
     border-radius: 50%;
 }
-
 
 .status-dot.active {
     background: #22c55e;
 }
 
-
 .status-dot.inactive {
     background: #ef4444;
 }
 
-
-/* ========================================
-   MAIN PREVIEW
-======================================== */
-
 .preview-main {
     flex: 1;
-
     min-width: 0;
-
     padding: 24px;
 }
 
-
 .preview-header {
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
-
     margin-bottom: 20px;
 }
 
-
 .preview-header h2 {
     margin: 0;
-
     color: #e2e8f0;
-
     font-size: 24px;
-
     font-weight: 600;
 }
 
-
 .preview-header p {
     margin: 7px 0 0;
-
     color: #64748b;
-
     font-size: 11px;
 }
 
-
 .preview-view-actions {
     display: flex;
-
     gap: 8px;
 }
 
-
 .preview-view-actions button {
     width: 34px;
-
     height: 34px;
-
     display: flex;
-
     align-items: center;
     justify-content: center;
-
     border: 1px solid rgba(96, 165, 250, 0.25);
-
     border-radius: 6px;
-
     background: #0b1728;
-
     color: #60a5fa;
 }
 
-
-/* ========================================
-   SEARCH
-======================================== */
-
 .preview-search {
     height: 42px;
-
     display: flex;
-
     align-items: center;
-
     gap: 10px;
-
     padding: 0 14px;
-
     margin-bottom: 18px;
-
     border: 1px solid rgba(96, 165, 250, 0.25);
-
     border-radius: 7px;
-
     background: #081422;
-
     color: #64748b;
-
     font-size: 12px;
 }
 
-
-/* ========================================
-   ORGANIZATION CARDS
-======================================== */
-
 .preview-cards {
     display: grid;
-
     grid-template-columns: repeat(3, minmax(0, 1fr));
-
     gap: 14px;
 }
 
-
 .preview-card {
     overflow: hidden;
-
     border: 1px solid rgba(96, 165, 250, 0.22);
-
     border-radius: 8px;
-
     background: #0b1728;
 }
 
-
 .preview-card-logo {
     height: 100px;
-
     display: flex;
-
     align-items: center;
     justify-content: center;
-
-    background:
-        linear-gradient(135deg,
-            #f8fafc,
-            #e2e8f0);
-
+    background: linear-gradient(135deg, #f8fafc, #e2e8f0);
     color: #2563eb;
-
     font-size: 32px;
-
     font-weight: 800;
-
     letter-spacing: -2px;
 }
-
 
 .preview-card-body {
     padding: 14px;
 }
 
-
 .preview-card-top {
     display: flex;
-
     align-items: flex-start;
-
     justify-content: space-between;
-
     gap: 8px;
 }
 
-
 .preview-card-top h3 {
     margin: 0;
-
     color: #e2e8f0;
-
     font-size: 15px;
 }
 
-
 .preview-status-badge {
     padding: 4px 7px;
-
     border-radius: 4px;
-
     font-size: 9px;
-
     font-weight: 600;
 }
 
-
 .preview-active {
     color: #86efac;
-
     background: rgba(34, 197, 94, 0.18);
 }
 
-
 .preview-inactive {
     color: #fca5a5;
-
     background: rgba(239, 68, 68, 0.18);
 }
 
-
 .preview-card-body>p {
     min-height: 34px;
-
     margin: 12px 0;
-
     color: #64748b;
-
     font-size: 10px;
-
     line-height: 1.5;
 }
 
-
 .preview-tags {
     display: flex;
-
     flex-wrap: wrap;
-
     gap: 5px;
 }
 
-
 .preview-tags span {
     padding: 4px 6px;
-
     border: 1px solid rgba(96, 165, 250, 0.2);
-
     border-radius: 4px;
-
     color: #94a3b8;
-
     font-size: 9px;
 }
-
 
 .preview-years-text {
     margin-top: 14px;
-
     color: #64748b;
-
     font-size: 9px;
-
     word-spacing: 4px;
 }
 
-
-/* ========================================
-   PAGINATION
-======================================== */
-
 .preview-pagination {
     display: flex;
-
     align-items: center;
-
     justify-content: center;
-
     gap: 7px;
-
     margin-top: 22px;
 }
 
-
 .preview-pagination button {
     width: 30px;
-
     height: 30px;
-
     display: flex;
-
     align-items: center;
     justify-content: center;
-
     border: 1px solid rgba(96, 165, 250, 0.2);
-
     border-radius: 5px;
-
     background: #0b1728;
-
     color: #94a3b8;
-
     font-size: 10px;
 }
 
-
 .preview-pagination .active-page {
     color: white;
-
     background: #2563eb;
 }
 
+@keyframes browserFloat {
 
-/* ========================================
-   TABLET
-======================================== */
+    0%,
+    100% {
+        transform: rotateX(0.5deg) rotateY(-1deg) translateY(0);
+    }
+
+    50% {
+        transform: rotateX(0deg) rotateY(1deg) translateY(-8px);
+    }
+}
 
 @media (max-width: 1000px) {
-
     .explorer-preview-wrapper {
         width: min(100% - 40px, 900px);
     }
@@ -876,20 +536,13 @@
     }
 }
 
-
-/* ========================================
-   MOBILE
-======================================== */
-
 @media (max-width: 700px) {
-
     .home-hero {
         padding-top: 40px;
     }
 
     .hero-content {
         width: min(100% - 32px, 900px);
-
         padding: 60px 0;
     }
 
@@ -899,13 +552,11 @@
 
     .hero-description {
         font-size: 16px;
-
         line-height: 1.65;
     }
 
     .hero-actions {
         width: 100%;
-
         flex-direction: column;
     }
 
@@ -916,11 +567,8 @@
 
     .hero-features {
         width: 100%;
-
         flex-wrap: wrap;
-
         gap: 22px;
-
         margin-top: 50px;
     }
 
@@ -930,35 +578,32 @@
 
     .explorer-preview-wrapper {
         width: calc(100% - 24px);
-
         margin-bottom: 50px;
+        perspective: none;
     }
 
     .browser-window {
         border-radius: 10px;
+        animation: browserFloatMobile 6s ease-in-out infinite;
     }
 
     .browser-toolbar {
         height: 44px;
-
         padding: 0 10px;
     }
 
     .browser-controls {
         width: auto;
-
         gap: 5px;
     }
 
     .browser-dot {
         width: 8px;
-
         height: 8px;
     }
 
     .browser-address {
         margin-left: 14px;
-
         font-size: 9px;
     }
 
@@ -1002,124 +647,23 @@
     .preview-pagination {
         margin-top: 16px;
     }
-}
 
-.browser-window {
-    position: relative;
-
-    overflow: hidden;
-
-    background:
-        linear-gradient(180deg,
-            #0f172a 0%,
-            #081225 100%);
-
-    border: 1px solid rgba(96, 165, 250, 0.32);
-
-    border-radius: 16px;
-
-    box-shadow:
-        0 35px 90px rgba(0, 0, 0, 0.6),
-        0 25px 80px rgba(37, 99, 235, 0.28),
-        0 0 100px rgba(37, 99, 235, 0.16),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05);
-}
-
-
-/* ========================================
-   BROWSER WINDOW 3D TILT ANIMATION
-======================================== */
-
-.explorer-preview-wrapper {
-    perspective: 1400px;
-}
-
-.browser-window {
-    position: relative;
-
-    overflow: hidden;
-
-    background:
-        linear-gradient(180deg,
-            #0f172a 0%,
-            #081225 100%);
-
-    border: 1px solid rgba(96, 165, 250, 0.32);
-
-    border-radius: 16px;
-
-    box-shadow:
-        0 35px 90px rgba(0, 0, 0, 0.6),
-        0 25px 80px rgba(37, 99, 235, 0.28),
-        0 0 100px rgba(37, 99, 235, 0.16),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05);
-
-    transform-style: preserve-3d;
-
-    animation: browserFloat 6s ease-in-out infinite;
-}
-
-
-/* ========================================
-   FLOAT + SUBTLE TILT
-======================================== */
-
-@keyframes browserFloat {
-
-    0%,
-    100% {
-        transform:
-            rotateX(0.5deg) rotateY(-1deg) translateY(0);
+    .heroFeatures {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 20px;
+        width: min(100%, 300px);
     }
 
-    50% {
-        transform:
-            rotateX(0deg) rotateY(1deg) translateY(-8px);
-    }
-}
-
-/* ========================================
-   HOVER EFFECT
-======================================== */
-
-.browser-window:hover {
-    animation-play-state: paused;
-
-    transform:
-        rotateX(0deg) rotateY(0deg) translateY(-4px);
-
-    transition:
-        transform 0.4s ease,
-        box-shadow 0.4s ease;
-}
-
-/* ========================================
-   ACCESSIBILITY
-======================================== */
-
-@media (prefers-reduced-motion: reduce) {
-
-    .browser-window {
-        animation: none;
-        transform: none;
-    }
-}
-
-
-/* ========================================
-   MOBILE
-======================================== */
-
-@media (max-width: 768px) {
-
-    .explorer-preview-wrapper {
-        perspective: none;
+    .heroFeature {
+        justify-content: flex-start;
+        padding: 0;
     }
 
-    .browser-window {
-        animation: browserFloatMobile 6s ease-in-out infinite;
+    .featureDivider {
+        width: 100%;
+        height: 1px;
     }
-
 }
 
 @keyframes browserFloatMobile {
@@ -1132,133 +676,11 @@
     50% {
         transform: translateY(-6px);
     }
-
 }
 
-/* ========================================
-   HERO FEATURES
-======================================== */
-
-.heroFeatures {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    width: min(100%, 720px);
-
-    margin-top: 52px;
-
-    padding: 0 10px;
-
-    color: #94a3b8;
-}
-
-
-/* ========================================
-   FEATURE
-======================================== */
-
-.heroFeature {
-    display: flex;
-    align-items: center;
-
-    flex: 1;
-
-    gap: 16px;
-
-    padding: 0 28px;
-}
-
-
-.heroFeatureIcon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    flex-shrink: 0;
-
-    color: #3b82f6;
-}
-
-
-.heroFeatureContent {
-    display: flex;
-    flex-direction: column;
-
-    gap: 5px;
-
-    text-align: left;
-}
-
-
-/* ========================================
-   TEXT
-======================================== */
-
-.heroFeature strong {
-    color: #e2e8f0;
-
-    font-size: 17px;
-
-    font-weight: 700;
-
-    line-height: 1.2;
-
-    white-space: nowrap;
-}
-
-
-.heroFeature span {
-    color: #94a3b8;
-
-    font-size: 13px;
-
-    line-height: 1.2;
-
-    white-space: nowrap;
-}
-
-
-/* ========================================
-   DIVIDER
-======================================== */
-
-.featureDivider {
-    width: 1px;
-
-    height: 36px;
-
-    flex-shrink: 0;
-
-    background: rgba(96, 165, 250, 0.25);
-}
-
-
-/* ========================================
-   MOBILE
-======================================== */
-
-@media (max-width: 700px) {
-
-    .heroFeatures {
-        flex-direction: column;
-
-        align-items: stretch;
-
-        gap: 20px;
-
-        width: min(100%, 300px);
-    }
-
-    .heroFeature {
-        justify-content: flex-start;
-
-        padding: 0;
-    }
-
-    .featureDivider {
-        width: 100%;
-
-        height: 1px;
+@media (prefers-reduced-motion: reduce) {
+    .browser-window {
+        animation: none;
+        transform: none;
     }
 }
