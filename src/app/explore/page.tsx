@@ -813,4 +813,3 @@ export default function ExplorerPage() {
         </main>
     );
 }
-
